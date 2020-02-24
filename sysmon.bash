@@ -108,11 +108,29 @@ for node in ${_servers}
 do
     cat $LOGFOLDER/mem/$node@${_ts}.log | while read output;
     do
-        mem_total=$(echo $output | awk '{printf("%.0f", $1/1024)}')
-        mem_used=$(echo $output | awk '{printf("%.0f", $2/1024)}')
-        mem_free=$(echo $output | awk '{printf("%.0f", $3/1024)}')
-        mem_usedp=$(echo $output | awk '{printf("%.0f", $2*100/$1)}')
-        [[ "$mem_usedp" > "${_threshold}" ]] && alarm ${_ts} $node "mem" "low" "memory total: ${mem_total}GB memory used: ${mem_used}GB memory free: ${mem_free}GB memory usage: ${mem_usedp}%"
+        mem_total=$(echo $output | awk '{printf("%.0f", $2/1024)}')
+        mem_used=$(echo $output | awk '{printf("%.0f", $3/1024)}')
+        mem_free=$(echo $output | awk '{printf("%.0f", $4/1024)}')
+        mem_usedp=$(echo $output | awk '{printf("%.0f", $3*100/$2)}')
+        [[ "$mem_usedp" > "${_threshold}" ]] && alarm ${_ts} $node "mem" "high" "memory total: ${mem_total}GB memory used: ${mem_used}GB memory free: ${mem_free}GB memory usage: ${mem_usedp}%"
+    done
+done
+}
+
+kpi_cpu()
+{
+local _servers _threshold _ts node cpu_usedp
+
+_servers="$1"
+_threshold="$2"
+_ts="$3"
+
+for node in ${_servers}
+do
+    cat $LOGFOLDER/cpu/$node@${_ts}.log | while read output;
+    do
+        cpu_usedp=$(echo $output | awk '{usage=($2+$4)*100/($2+$4+$5)} END {printf ("%.0f\n", usage)}')
+        [[ "$cpu_usedp" > "${_threshold}" ]] && alarm ${_ts} $node "cpu" "high" "cpu usage(>${_threshold}%): ${cpu_usedp}%"
     done
 done
 }
@@ -192,11 +210,13 @@ PASSWORD='pass'
 readonly SSHKEY="~/.ssh/id_rsa"
 
 # kpi common setting
-KPI="fs mem"
+KPI="fs mem cpu"
 readonly CMD_FS="df -H | grep -vE '^Filesystem|tmpfs|cdrom|boot'|grep %"
-readonly CMD_MEM="free -m|grep Mem|awk '{print \$2,\$3,\$4}'"
-THRESHOLD_FS=50
-THRESHOLD_MEM=20
+readonly CMD_MEM="free -m|grep Mem"
+readonly CMD_CPU="grep '^cpu ' /proc/stat"
+THRESHOLD_FS=80
+THRESHOLD_MEM=80
+THRESHOLD_CPU=80
 
 # alarm db setting
 readonly DBPATH="."
