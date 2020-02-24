@@ -2,7 +2,8 @@
 # system monitoring solution
 # https://github.com/robertluwang
 # v1.1 kpi for FS space usage  Feb 20, 2020 
-
+# v1.2 supports kpi loop  Feb 22, 2020 
+# 
 syslocal()
 {
 local _cmd
@@ -132,111 +133,91 @@ do
 done
 }
 
+lowcase()
+{
+local _str
+[[ ! -z "$1" ]] && _str="$1"
 
+echo ${_str} | tr 'A-Z' 'a-z'
+}
+
+upcase()
+{
+local _str
+[[ ! -z "$1" ]] && _str="$1"
+
+echo ${_str} | tr 'a-z' 'A-Z'
+}
 
 ## main loop
 
-DEBUG=1  # 1 - keep outlog    0 - remove outlog 
+DEBUG=0  # 1 - keep outlog    0 - remove outlog 
 LOGFOLDER=`pwd`/.sysmon/outlog
 
 USERNAME='user'
 PASSWORD='pass'
 
-echo
-date
-echo
-
-echo
-echo KPI FS demo
-echo
-
-KPI="fs"
-[ ! -d "$LOGFOLDER/$KPI" ] && sudo mkdir -p $LOGFOLDER/$KPI
-sudo chmod 666 $LOGFOLDER/$KPI
-
+KPI="fs mem"
 CMD_FS="df -H | grep -vE '^Filesystem|tmpfs|cdrom|boot'|grep %"
-THRESHOLD_FS=50
-CMD=${CMD_FS}
-THRESHOLD=${THRESHOLD_FS}
-
-# kpi fs - localhost
-TS=` date '+%m%d%y%H%M%S'`
-SERVER='localhost'
-echo
-echo kpi $KPI - localhost - threshold:$THRESHOLD
-echo
-syslocal "$CMD" "$LOGFOLDER" "$KPI" "$TS"
-kpi_fs "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS"
-
-[[ DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$KPI/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$KPI/<node>@$TS.log"
-
-# kpi fs - remote host with key
-TS=` date '+%m%d%y%H%M%S'`
-SERVER=`cat /etc/hosts|grep localhost|grep -v ip6|awk '{print $2}'|sort`
-KEY='id_rsa'
-echo
-echo kpi $KPI - remote host with key - threshold:$THRESHOLD
-echo
-ssh_run_key "$SERVER" "$USERNAME" "$KEY" "$CMD" "$LOGFOLDER" "$KPI" "$TS"
-kpi_fs "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS"
-
-[[ DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$KPI/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$KPI/<node>@$TS.log"
-
-# kpi_fs - remote host with password
-TS=` date '+%m%d%y%H%M%S'`
-SERVER=`cat /etc/hosts|grep localhost|grep -v ip6|awk '{print $2}'|sort`
-echo
-echo kpi $KPI- remote host with password - threshold:$THRESHOLD
-echo 
-ssh_run_pass "$SERVER" "$USERNAME" "$PASSWORD" "$CMD" "$LOGFOLDER" "$KPI" "$TS"
-kpi_fs "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS"
-
-[[ DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$KPI/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$KPI/<node>@$TS.log"
-
-echo
-echo KPI mem demo
-echo
-
-KPI="mem"
-[ ! -d "$LOGFOLDER/$KPI" ] && sudo mkdir -p $LOGFOLDER/$KPI
-sudo chmod 666 $LOGFOLDER/$KPI
-
 CMD_MEM="free -m|grep Mem"
+THRESHOLD_FS=50
 THRESHOLD_MEM=30
-CMD=${CMD_MEM}
-THRESHOLD=${THRESHOLD_MEM}
 
-# kpi mem - localhost
-TS=` date '+%m%d%y%H%M%S'`
-SERVER='localhost'
-echo
-echo kpi $KPI - localhost - threshold:$THRESHOLD
-echo
-syslocal "$CMD" "$LOGFOLDER" "$KPI" "$TS"
-kpi_mem "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS"
+for kpi in $KPI
+do 
 
-[[ DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$KPI/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$KPI/<node>@$TS.log"
+    echo
+    date
+    echo
 
-# kpi mem - remote host with key
-TS=` date '+%m%d%y%H%M%S'`
-SERVER=`cat /etc/hosts|grep localhost|grep -v ip6|awk '{print $2}'|sort`
-KEY='id_rsa'
-echo
-echo kpi $KPI - remote host with key - threshold:$THRESHOLD
-echo
-ssh_run_key "$SERVER" "$USERNAME" "$KEY" "$CMD" "$LOGFOLDER" "$KPI" "$TS"
-kpi_mem "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS"
+    [ ! -d "$LOGFOLDER/$kpi" ] && sudo mkdir -p $LOGFOLDER/$kpi
+    sudo chmod 666 $LOGFOLDER/$kpi
 
-[[ DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$KPI/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$KPI/<node>@$TS.log"
+    KPIU=`upcase $kpi`
+    CMD_NAME=`echo CMD_$KPIU`
+    THRESHOLD_NAME=`echo THRESHOLD_$KPIU`
+    CMD=${!CMD_NAME}
+    THRESHOLD=${!THRESHOLD_NAME}
 
-# kpi mem - remote host with password
-TS=` date '+%m%d%y%H%M%S'`
-SERVER=`cat /etc/hosts|grep localhost|grep -v ip6|awk '{print $2}'|sort`
-echo
-echo kpi $KPI- remote host with password - threshold:$THRESHOLD
-echo 
-ssh_run_pass "$SERVER" "$USERNAME" "$PASSWORD" "$CMD" "$LOGFOLDER" "$KPI" "$TS"
-kpi_mem "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS"
+    # localhost
+    TS=` date '+%m%d%y%H%M%S'`
+    SERVER='localhost'
+    echo
+    echo kpi $kpi - localhost - threshold:$THRESHOLD
+    echo
+    syslocal "$CMD" "$LOGFOLDER" "$kpi" "$TS"
+    kpi_$kpi "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS"
 
-[[ DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$KPI/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$KPI/<node>@$TS.log"
+    [[ DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$kpi/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$kpi/<node>@$TS.log"
+
+    # remote host with key
+    TS=` date '+%m%d%y%H%M%S'`
+    SERVER=`cat /etc/hosts|grep localhost|grep -v ip6|awk '{print $2}'|sort`
+    KEY='id_rsa'
+    echo
+    echo kpi $kpi - remote host with key - threshold:$THRESHOLD
+    echo
+    ssh_run_key "$SERVER" "$USERNAME" "$KEY" "$CMD" "$LOGFOLDER" "$kpi" "$TS"
+    kpi_$kpi "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS"
+
+    [[ DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$kpi/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$kpi/<node>@$TS.log"
+
+    # remote host with password
+    TS=` date '+%m%d%y%H%M%S'`
+    SERVER=`cat /etc/hosts|grep localhost|grep -v ip6|awk '{print $2}'|sort`
+    echo
+    echo kpi $kpi - remote host with password - threshold:$THRESHOLD
+    echo 
+    ssh_run_pass "$SERVER" "$USERNAME" "$PASSWORD" "$CMD" "$LOGFOLDER" "$kpi" "$TS"
+    kpi_$kpi "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS"
+
+    [[ DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$kpi/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$kpi/<node>@$TS.log"
+
+
+done
+
+
+
+
+    
 
