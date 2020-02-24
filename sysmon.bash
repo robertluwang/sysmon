@@ -4,7 +4,7 @@
 # v1.1 kpi for FS space usage  Feb 20, 2020 
 # v1.2 supports kpi loop  Feb 22, 2020 
 # v1.3 add alarm, email functions  Feb 22, 2020 
-# 
+# v1.4 add sqlite3 alarmdb Feb 23, 2020 
 
 lowcase()
 {
@@ -24,26 +24,24 @@ echo ${_str} | tr 'a-z' 'A-Z'
 
 syslocal()
 {
-local _cmd _logfolder _kpi _ts
+local _cmd _kpi _ts
 _cmd="$1"
-_logfolder="$2"
-_kpi="$3"
-_ts="$4" 
+_kpi="$2"
+_ts="$3" 
 
-eval ${_cmd} > ${_logfolder}/${_kpi}/localhost@${_ts}.log 
+eval ${_cmd} > $LOGFOLDER/${_kpi}/localhost@${_ts}.log 
 }
 
 ssh_run_pass()
 {
-local _servers _username _password _cmd _logfolder _kpi _ts node
+local _servers _username _password _cmd _kpi _ts node
 
 _servers="$1"
 _username="$2"
 _password="$3" 
 _cmd="$4"
-_logfolder="$5"
-_kpi="$6"
-_ts="$7" 
+_kpi="$5"
+_ts="$6" 
 
 for node in ${_servers}
 do 
@@ -55,7 +53,7 @@ send "${_password}\r"
 expect "password: "
 send "${_password}\r"
 expect "$ "
-send "${_cmd} > ${_logfolder}/${_kpi}/$node@${_ts}.log\r"
+send "${_cmd} > $LOGFOLDER/${_kpi}/$node@${_ts}.log\r"
 expect "$ "
 send "exit\r"
 EOF
@@ -64,38 +62,35 @@ done
 
 ssh_run_key()
 {
-local _servers _username _key _cmd _logfolder _kpi _ts node
+local _servers _username _key _cmd _kpi _ts node
 _servers="$1"
 _username="$2"
 _key="$3" 
 _cmd="$4"
-_logfolder="$5"
-_kpi="$6"
-_ts="$7"
+_kpi="$5"
+_ts="$6"
 
 for node in ${_servers}
 do 
-    ssh -i ${_key} -o StrictHostKeyChecking=no ${_username}@$node -C "${_cmd}" > ${_logfolder}/${_kpi}/$node@${_ts}.log
+    ssh -i ${_key} -o StrictHostKeyChecking=no ${_username}@$node -C "${_cmd}" > $LOGFOLDER/${_kpi}/$node@${_ts}.log
 done
 }
 
 kpi_fs()
 {
-local _servers _threshold _logfolder _ts node
+local _servers _threshold _ts node usep partition
 
 _servers="$1"
 _threshold="$2"
-_logfolder="$3"
-_ts="$4"
+_ts="$3"
 
 for node in ${_servers}
 do
-    cat ${_logfolder}/fs/$node@${_ts}.log | while read output;
+    cat $LOGFOLDER/fs/$node@${_ts}.log | while read output;
     do
         usep=$(echo $output | awk '{ print $5}' | cut -d'%' -f1  )
         partition=$(echo $output | awk '{ print $6 }' )
         # echo $usep ${_threshold} 
-        #[[ $usep -ge ${_threshold} ]] && echo $node: $output
         [[ $usep -ge ${_threshold} ]] && alarm ${_ts} $node "fs" "high" "$output"
     done
 done
@@ -103,21 +98,20 @@ done
 
 kpi_mem()
 {
-local _servers _threshold _logfolder _ts node mem_total mem_used mem_free mem_usedp
+local _servers _threshold _ts node mem_total mem_used mem_free mem_usedp
 
 _servers="$1"
 _threshold="$2"
-_logfolder="$3"
-_ts="$4"
+_ts="$3"
 
 for node in ${_servers}
 do
-    cat ${_logfolder}/mem/$node@${_ts}.log | while read output;
+    cat $LOGFOLDER/mem/$node@${_ts}.log | while read output;
     do
-        mem_total=$(echo $output | awk '{printf("%.0f", $2/1024)}')
-        mem_used=$(echo $output | awk '{printf("%.0f", $3/1024)}')
-        mem_free=$(echo $output | awk '{printf("%.0f", $4/1024)}')
-        mem_usedp=$(echo $output | awk '{printf("%.0f", $3/$2*100)}')
+        mem_total=$(echo $output | awk '{printf("%.0f", $1/1024)}')
+        mem_used=$(echo $output | awk '{printf("%.0f", $2/1024)}')
+        mem_free=$(echo $output | awk '{printf("%.0f", $3/1024)}')
+        mem_usedp=$(echo $output | awk '{printf("%.0f", $2*100/$1)}')
         [[ "$mem_usedp" > "${_threshold}" ]] && alarm ${_ts} $node "mem" "low" "memory total: ${mem_total}GB memory used: ${mem_used}GB memory free: ${mem_free}GB memory usage: ${mem_usedp}%"
     done
 done
@@ -125,7 +119,7 @@ done
 
 alarm()
 {
-local _ts _node _kpi _severity _alarm
+local _ts _node _kpi _severity _alarm alarmid
 
 _ts="$1"
 _node="$2"
@@ -134,6 +128,34 @@ _severity="$4"
 _alarm="$5"
 
 echo ${_ts} " " ${_node} " " ${_kpi} " " `upcase ${_severity}` "[ " ${_alarm} " ]" 
+alarmid=$(alarmdb_add "${_ts}" "${_node}" "${_kpi}" "`upcase ${_severity}`" "${_alarm}")
+#echo new alarm $alarmid added 
+}
+
+alarmdb_add()
+{
+local _ts _node _kpi _severity _alarm alarmid sqlstr sqlresult
+
+_ts="$1"
+_node="$2"
+_kpi="$3"
+_severity="$4"
+_alarm="$5"
+
+if [ -f "$DBPATH"/"$ALARMDB" ];then 
+    sqlstr="select id from alarmdb order by id desc limit 1;"
+    sqlresult=$(echo "$sqlstr" | $SQLITECONN)
+    alarmid=$(echo $sqlresult + 1 | bc)
+    sqlstr="insert into alarmdb (id,ts,node,kpi,severity,alarm) values ($alarmid,\"${_ts}\",\"${_node}\",\"${_kpi}\",\"${_severity}\",\"${_alarm}\");"
+    echo "$sqlstr" | $SQLITECONN
+else
+    alarmid=$(echo $ALARMID + 1|bc)
+    sqlstr="create table alarmdb (id INT PRIMARY KEY,ts TEXT,node TEXT,kpi TEXT,severity TEXT,alarm TEXT);\
+    insert into alarmdb (id,ts,node,kpi,severity,alarm) values ($alarmid,\"${_ts}\",\"${_node}\",\"${_kpi}\",\"${_severity}\",\"${_alarm}\");"
+    echo "$sqlstr" | $SQLITECONN
+fi
+
+echo $alarmid
 
 }
 
@@ -150,32 +172,40 @@ lines=`cat ${_body} | grep "${_filter}" | wc -l | awk '{print $1}'`
 [[ "$lines" -gt 0 ]] && /usr/bin/mailx -s "${_subject}" "${_list}" < ${_body} ; echo "Email already sent out to ${_list}"
 }
 
-## main loop
+## common setting
 
-# common setting
 DEBUG=1  # 1 - keep outlog    0 - remove outlog 
-LOGFOLDER=`pwd`/.sysmon/outlog
+readonly LOGFOLDER=`pwd`/.sysmon/outlog
 
 # email setting
 EMAILYES=0 # 1 - send email  0 - not send email 
 
 EMAIL_LIST="demo@gmail.com"
 EMAIL_FILTER="HIGH"
-REPORT_TS=` date '+%m-%d-%Y-%H-%M-%S'`
+readonly REPORT_TS=` date '+%m-%d-%Y-%H-%M-%S'`
 EMAIL_SUB="System monitoring report - ${REPORT_TS}"
-REPORT=$LOGFOLDER/report-${REPORT_TS}.log
+readonly REPORT=$LOGFOLDER/report-${REPORT_TS}.log
 
 # node access 
 USERNAME='user'
 PASSWORD='pass'
-SSHKEY="~/.ssh/id_rsa"
+readonly SSHKEY="~/.ssh/id_rsa"
 
 # kpi common setting
 KPI="fs mem"
-CMD_FS="df -H | grep -vE '^Filesystem|tmpfs|cdrom|boot'|grep %"
-CMD_MEM="free -m|grep Mem"
+readonly CMD_FS="df -H | grep -vE '^Filesystem|tmpfs|cdrom|boot'|grep %"
+readonly CMD_MEM="free -m|grep Mem|awk '{print \$2,\$3,\$4}'"
 THRESHOLD_FS=50
 THRESHOLD_MEM=20
+
+# alarm db setting
+readonly DBPATH="."
+readonly ALARMDB="alarmdb.db"
+readonly DBDUMP="alarmdb_dump.txt-$REPORT_TS"
+ALARMID=1000000
+readonly SQLITECONN="sqlite3 $DBPATH/$ALARMDB"
+
+## loop body to process kpi monitor and alarm per pki on servers 
 
 echo The system monitoring report is in progress ......
 
@@ -201,8 +231,8 @@ do
     echo >> $REPORT
     echo kpi $kpi - localhost - threshold:$THRESHOLD >> $REPORT
     echo >> $REPORT
-    syslocal "$CMD" "$LOGFOLDER" "$kpi" "$TS"
-    kpi_$kpi "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS" >> $REPORT
+    syslocal "$CMD" "$kpi" "$TS"
+    kpi_$kpi "$SERVER" "$THRESHOLD" "$TS" >> $REPORT
 
     [[ $DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$kpi/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$kpi/<node>@$TS.log" >> $REPORT
 
@@ -212,8 +242,8 @@ do
     echo >> $REPORT
     echo kpi $kpi - remote host with key - threshold:$THRESHOLD >> $REPORT
     echo >> $REPORT
-    ssh_run_key "$SERVER" "$USERNAME" "$SSHKEY" "$CMD" "$LOGFOLDER" "$kpi" "$TS"
-    kpi_$kpi "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS" >> $REPORT
+    ssh_run_key "$SERVER" "$USERNAME" "$SSHKEY" "$CMD" "$kpi" "$TS"
+    kpi_$kpi "$SERVER" "$THRESHOLD" "$TS" >> $REPORT
 
     [[ $DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$kpi/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$kpi/<node>@$TS.log" >> $REPORT
 
@@ -223,8 +253,8 @@ do
     echo >> $REPORT
     echo kpi $kpi - remote host with password - threshold:$THRESHOLD >> $REPORT
     echo >> $REPORT
-    ssh_run_pass "$SERVER" "$USERNAME" "$PASSWORD" "$CMD" "$LOGFOLDER" "$kpi" "$TS"
-    kpi_$kpi "$SERVER" "$THRESHOLD" "$LOGFOLDER" "$TS" >> $REPORT
+    ssh_run_pass "$SERVER" "$USERNAME" "$PASSWORD" "$CMD" "$kpi" "$TS"
+    kpi_$kpi "$SERVER" "$THRESHOLD" "$TS" >> $REPORT
 
     [[ $DEBUG -ne 1 ]] && rm -f $LOGFOLDER/$kpi/*@$TS.log || echo "Please see detail log at ""$LOGFOLDER/$kpi/<node>@$TS.log" >> $REPORT
 
@@ -239,6 +269,9 @@ echo The system monitoring report saved at $REPORT
 echo
 
 [[ $EMAILYES -eq 1 ]] && send_email "${EMAIL_SUB}" "$REPORT" "${EMAIL_FILTER}" "${EMAIL_LIST}"
+
+
+
 
 
 
