@@ -180,7 +180,7 @@ readonly LOGFOLDER=`pwd`/.sysmon/outlog
 # email setting
 EMAILYES=0 # 1 - send email  0 - not send email 
 
-EMAIL_LIST="demo@gmail.com"
+EMAIL_LIST="demo@sysmon.com"
 EMAIL_FILTER="HIGH"
 readonly REPORT_TS=` date '+%m-%d-%Y-%H-%M-%S'`
 EMAIL_SUB="System monitoring report - ${REPORT_TS}"
