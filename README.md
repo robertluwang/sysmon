@@ -8,6 +8,13 @@ A lightweight system monitoring solution in bash
 - alarm db to track history alarms 
 - support cli 
 
+## test env
+```
+wsl ubuntu on win10
+127.0.0.1 localhost wsl
+```
+add wsl as remote server just for test, it enabled user/password login and ssh key
+
 ## Usages
 ```
 /mnt/c/shared/sysmon$ ./sysmon.sh
@@ -28,7 +35,6 @@ fs mem cpu
 ## monitor for localhost, all KPI
 ```
 /mnt/c/shared/sysmon$ ./sysmon.sh -s localhost -k all
-
 
 Sat Feb 29 18:18:05 STD 2020 - localhost - FS
 
@@ -54,6 +60,7 @@ The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report
 ```
 
 ## monitor for remote server with key on selected kpi
+```
 /mnt/c/shared/sysmon$ ./sysmon.sh -s wsl -k "mem cpu" -m key
 
 Sat Feb 29 18:21:57 STD 2020 - wsl - MEM
@@ -67,6 +74,7 @@ Sat Feb 29 18:22:00 STD 2020 - wsl - CPU
 Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_02-29-2020-18-21-57.log
 
 The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report_02-29-2020-18-21-57.log
+```
 
 ## monitor for remote server with user/pass on selected kpi 
 ```
