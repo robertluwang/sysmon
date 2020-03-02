@@ -1,6 +1,7 @@
 #!/bin/bash
 # KPI customization for sysmon
 # https://github.com/robertluwang
+# March 2nd, 2020 
 # extend new kpi:
 # KPIFULL="FS MEM CPU NEW"
 # CMD_NEW="..."  kpi data collection command
