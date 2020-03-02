@@ -8,7 +8,7 @@
 # v1.5 add getopts for cli  Feb 29, 2020
 # v1.6 March 1st, 2020
 # add host ping -p and -f filename
-# move kpi customization to sysmon-kpi.sh 
+# move kpi customization to sysmon-kpi.bash 
 
 ## common setting
 
