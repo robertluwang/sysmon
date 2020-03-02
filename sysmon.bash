@@ -343,7 +343,7 @@ PING=0
 usage()
 {
     echo "Usage: $0 [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-p] [-l] [-h]"
-    echo "-s server string, localhost needs -k option; remote server needs -k -m options for system monitor or needs -p for ping test"
+    echo "-s server string, localhost need -k option; remote server need -k -m options for system monitor or need -p for ping test"
     echo "-f server filename, cannot exist with -s at sametime; need -k -m options for system monitor or need -p for ping test"
     echo "-k kpi name, all or valid kpi name like fs, mem and cpu etc"
     echo "-m access mode, ssh remote access with key or user/password"
