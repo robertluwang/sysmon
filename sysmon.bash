@@ -12,7 +12,7 @@
 
 ## common setting
 
-source ./sysmon-kpi.sh
+source ./sysmon-kpi.bash
 
 DEBUG=1  # 1 - keep outlog    0 - remove outlog 
 readonly LOGFOLDER=`pwd`/.sysmon/outlog  # it must be at shared FS , accessable by all nodes
