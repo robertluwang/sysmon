@@ -19,7 +19,7 @@ add wsl as remote server just for test, it enabled user/password login and ssh k
 ```
 /mnt/c/shared/sysmon$ ./sysmon.bash
 Usage: ./sysmon.bash [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-p] [-l] [-h]
--s server string, localhost needs -k option; remote server needs -k -m options for system monitor or needs -p for ping test
+-s server string, localhost need -k option; remote server need -k -m options for system monitor or needs -p for ping test
 -f server filename, cannot exist with -s at sametime; need -k -m options for system monitor or need -p for ping test
 -k kpi name, all or valid kpi name like fs, mem and cpu etc
 -m access mode, ssh remote access with key or user/password
