@@ -13,7 +13,7 @@ A lightweight system monitoring solution in bash
 wsl ubuntu on win10
 127.0.0.1 localhost wsl1 wsl2 
 ```
-add wsl as remote server just for test, it enabled user/password login and ssh key
+add wslx as remote server just for test, it enabled user/password login and ssh key
 
 ## Usages
 ```
