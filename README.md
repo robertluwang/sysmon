@@ -11,30 +11,47 @@ A lightweight system monitoring solution in bash
 ## test env
 ```
 wsl ubuntu on win10
-127.0.0.1 localhost wsl
+127.0.0.1 localhost wsl1 wsl2 
 ```
 add wsl as remote server just for test, it enabled user/password login and ssh key
 
 ## Usages
 ```
-/mnt/c/shared/sysmon$ ./sysmon.sh
-Usage: ./sysmon.sh -s [localhost|server] -k [all|kpi] [-m key|pass] [-l] [-h]
--s server name, localhost need -k option; remote server need -k -m options
+/mnt/c/shared/sysmon$ ./sysmon.bash
+Usage: ./sysmon.bash [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-p] [-l] [-h]
+-s server string, localhost needs -k option; remote server needs -k -m options for system monitor or needs -p for ping test
+-f server filename, cannot exist with -s at sametime; need -k -m options for system monitor or need -p for ping test
 -k kpi name, all or valid kpi name like fs, mem and cpu etc
 -m access mode, ssh remote access with key or user/password
+-p ping host, need to work with -s or -f option
 -l list available kpi list
 -h help
 ```
 
 ## check available kpi 
 ```
-/mnt/c/shared/sysmon$ ./sysmon.sh -l
+/mnt/c/shared/sysmon$ ./sysmon.bash -l
 fs mem cpu
 ```
+## host ping scan 
+```
+/mnt/c/shared/sysmon$./sysmon.bash -p -s localhost
+03-02-2020-13-21-48   localhost  ping - [ Server  localhost  : up  ]
 
+/mnt/c/shared/sysmon$ ./sysmon.bash -p -s "wsl1 wsl2"
+03-02-2020-13-22-51   wsl1  ping - [ Server  wsl1  : up  ]
+03-02-2020-13-22-51   wsl2  ping - [ Server  wsl2  : up  ]
+
+/mnt/c/shared/sysmon$ ./sysmon.bash -p -f nodelist
+03-02-2020-13-23-03   wsl1  ping - [ Server  wsl1  : up  ]
+03-02-2020-13-23-03   wsl2  ping - [ Server  wsl2  : up  ]
+
+/mnt/c/shared/sysmon$ ./sysmon.bash -p -s wsl3  
+03-02-2020-13-29-55   wsl3   ping   HIGH [  Server wsl3 : down  ]
+```
 ## monitor for localhost, all KPI
 ```
-/mnt/c/shared/sysmon$ ./sysmon.sh -s localhost -k all
+/mnt/c/shared/sysmon$ ./sysmon.bash -s localhost -k all
 
 Sat Feb 29 18:18:05 STD 2020 - localhost - FS
 
@@ -98,3 +115,36 @@ Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_02-29-
 
 The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report_02-29-2020-18-24-03.log
 ```
+## monitor for remote server with ssh key for server list file
+```
+/mnt/c/shared/sysmon$ ./sysmon.bash -f nodelist -k cpu -m key
+
+Mon Mar  2 13:24:58 STD 2020 - wsl1 - CPU
+
+03-02-2020-13-24-58   wsl1   cpu   HIGH [  cpu usage(>5%): 8%  ]
+
+Mon Mar  2 13:25:01 STD 2020 - wsl2 - CPU
+
+03-02-2020-13-24-58   wsl2   cpu   HIGH [  cpu usage(>5%): 8%  ]
+
+Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_03-02-2020-13-24-58.log
+
+The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report_03-02-2020-13-24-58.log
+```
+## monitor for remote server with user/pass for server list file
+```
+/mnt/c/shared/sysmon$ ./sysmon.bash -f nodelist -k mem -m pass
+
+Mon Mar  2 13:25:20 STD 2020 - wsl1 - MEM
+
+03-02-2020-13-25-20   wsl1   mem   HIGH [  memory total: 32GB memory used: 13GB memory free: 19GB memory usage: 41%  ]
+
+Mon Mar  2 13:25:24 STD 2020 - wsl2 - MEM
+
+03-02-2020-13-25-20   wsl2   mem   HIGH [  memory total: 32GB memory used: 13GB memory free: 19GB memory usage: 41%  ]
+
+Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_03-02-2020-13-25-20.log
+
+The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report_03-02-2020-13-25-20.log
+```
+
