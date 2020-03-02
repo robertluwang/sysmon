@@ -6,7 +6,9 @@
 # v1.3 add alarm, email functions  Feb 22, 2020 
 # v1.4 add sqlite3 alarmdb Feb 23, 2020 
 # v1.5 add getopts for cli  Feb 29, 2020
-# v1.6 add host ping -p and -f filename  March 1st, 2020
+# v1.6 March 1st, 2020
+# add host ping -p and -f filename
+# move kpi customization to sysmon-kpi.sh 
 
 ## common setting
 
