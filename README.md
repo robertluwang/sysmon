@@ -6,7 +6,7 @@ A lightweight system monitoring solution in bash
 - KPI based customzation
 - support local host, remote host with ssh key and remote host with user/pass
 - alarm db to track history alarms 
-- support cli 
+- support cli: sysmon, remotemon, hostping
 
 ## test env
 ```
@@ -18,7 +18,7 @@ add wslx as remote server just for test, it enabled user/password login and ssh 
 ## Usages
 ```
 /mnt/c/shared/sysmon$ ./sysmon.bash
-Usage: ./sysmon.bash [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-p] [-l] [-h]
+Usage: ./sysmon.sh [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-p] [-l] [-h]
 -s server string, localhost need -k option; remote server need -k -m options for system monitor or needs -p for ping test
 -f server filename, cannot exist with -s at sametime; need -k -m options for system monitor or need -p for ping test
 -k kpi name, all or valid kpi name like fs, mem and cpu etc
@@ -30,28 +30,28 @@ Usage: ./sysmon.bash [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|
 
 ## check available kpi 
 ```
-/mnt/c/shared/sysmon$ ./sysmon.bash -l
+/mnt/c/shared/sysmon$ ./sysmon.sh -l
 fs mem cpu
 ```
 ## host ping scan 
 ```
-/mnt/c/shared/sysmon$./sysmon.bash -p -s localhost
+/mnt/c/shared/sysmon$./sysmon.sh -p -s localhost
 03-02-2020-13-21-48   localhost  ping - [ Server  localhost  : up  ]
 
-/mnt/c/shared/sysmon$ ./sysmon.bash -p -s "wsl1 wsl2"
+/mnt/c/shared/sysmon$ ./sysmon.sh -p -s "wsl1 wsl2"
 03-02-2020-13-22-51   wsl1  ping - [ Server  wsl1  : up  ]
 03-02-2020-13-22-51   wsl2  ping - [ Server  wsl2  : up  ]
 
-/mnt/c/shared/sysmon$ ./sysmon.bash -p -f nodelist
+/mnt/c/shared/sysmon$ ./sysmon.sh -p -f nodelist
 03-02-2020-13-23-03   wsl1  ping - [ Server  wsl1  : up  ]
 03-02-2020-13-23-03   wsl2  ping - [ Server  wsl2  : up  ]
 
-/mnt/c/shared/sysmon$ ./sysmon.bash -p -s wsl3  
+/mnt/c/shared/sysmon$ ./sysmon.sh -p -s wsl3  
 03-02-2020-13-29-55   wsl3   ping   HIGH [  Server wsl3 : down  ]
 ```
 ## monitor for localhost, all KPI
 ```
-/mnt/c/shared/sysmon$ ./sysmon.bash -s localhost -k all
+/mnt/c/shared/sysmon$ ./sysmon.sh -s localhost -k all
 
 Sat Feb 29 18:18:05 STD 2020 - localhost - FS
 
@@ -117,7 +117,7 @@ The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report
 ```
 ## monitor for remote server with ssh key for server list file
 ```
-/mnt/c/shared/sysmon$ ./sysmon.bash -f nodelist -k cpu -m key
+/mnt/c/shared/sysmon$ ./sysmon.sh -f nodelist -k cpu -m key
 
 Mon Mar  2 13:24:58 STD 2020 - wsl1 - CPU
 
@@ -133,7 +133,7 @@ The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report
 ```
 ## monitor for remote server with user/pass for server list file
 ```
-/mnt/c/shared/sysmon$ ./sysmon.bash -f nodelist -k mem -m pass
+/mnt/c/shared/sysmon$ ./sysmon.sh -f nodelist -k mem -m pass
 
 Mon Mar  2 13:25:20 STD 2020 - wsl1 - MEM
 
