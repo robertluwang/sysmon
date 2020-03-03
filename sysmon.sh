@@ -1,5 +1,5 @@
 #!/bin/bash
-# system monitoring solution
+# system monitoring solution cli
 # https://github.com/robertluwang
 # v1.1 kpi for FS space usage  Feb 20, 2020 
 # v1.2 supports kpi loop  Feb 22, 2020 
