@@ -117,7 +117,7 @@ The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report
 ```
 ## monitor for remote server with ssh key for server list file
 ```
-/mnt/c/shared/sysmon$ ./sysmon.sh -f nodelist -k cpu -m key
+/mnt/c/shared/sysmon$ ./sysmon.sh -f config/nodelist -k cpu -m key
 
 Mon Mar  2 13:24:58 STD 2020 - wsl1 - CPU
 
@@ -133,7 +133,7 @@ The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report
 ```
 ## monitor for remote server with user/pass for server list file
 ```
-/mnt/c/shared/sysmon$ ./sysmon.sh -f nodelist -k mem -m pass
+/mnt/c/shared/sysmon$ ./sysmon.sh -f config/nodelist -k mem -m pass
 
 Mon Mar  2 13:25:20 STD 2020 - wsl1 - MEM
 
