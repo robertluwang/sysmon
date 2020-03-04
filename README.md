@@ -6,7 +6,7 @@ A lightweight system monitoring solution in bash
 - KPI based customzation
 - support local host, remote host with ssh key and remote host with user/pass
 - alarm db to track history alarms 
-- support cli: sysmon, remotemon, hostping
+- support cli: sysmon, localmon, remotemon, hostping
 
 ## test env
 ```
