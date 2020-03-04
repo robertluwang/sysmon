@@ -1,5 +1,5 @@
 # sysmon
-A lightweight system monitoring solution in bash
+A lightweight system monitoring solution
 
 ## Features
 - implemented in bash + sqlite3
