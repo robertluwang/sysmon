@@ -8,6 +8,10 @@ source ./util/sysmon-common.sh
 source ./util/sysmon-kpi.sh
 source ./util/alarm-common.sh
 
+# disable debug and email 
+DEBUG=0
+EMAILYES=0
+
 ## main loop 
 
 unset KPI 
@@ -15,9 +19,11 @@ SERVER=localhost
 
 usage()
 {
-    echo "Usage: $0 [-k all|kpi] [-l] [-h]"
+    echo "Usage: $0 [-k all|kpi] [-l] [-d] [-e emaillist] [-h]"
     echo "-k kpi name, all or valid kpi name like fs, mem and cpu etc"
     echo "-l list available kpi list"
+    echo "-d debug flag"
+    echo "-e email list"
     echo "-h help"
     exit
 }
@@ -26,7 +32,7 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
-while getopts ":k:m:lh" opt; do
+while getopts ":k:m:e:ldh" opt; do
 case $opt in
     k) KPI="`upcase "$OPTARG"`"
     if [[ "$KPI" == "ALL" ]];then 
@@ -38,6 +44,11 @@ case $opt in
     ;;
     l) echo `lowcase "$KPIFULL"`
     exit
+    ;;
+    d) DEBUG=1
+    ;;
+    e) EMAIL_LIST="$OPTARG"
+    EMAILYES=1
     ;;
     h) usage
     ;;

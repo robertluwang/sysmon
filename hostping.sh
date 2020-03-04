@@ -7,6 +7,10 @@
 source ./util/sysmon-common.sh
 source ./util/alarm-common.sh
 
+# disable debug and email 
+DEBUG=0
+EMAILYES=0
+
 ## main loop 
 
 unset SERVER FILE  
@@ -15,10 +19,12 @@ PING=0
 
 usage()
 {
-    echo "Usage: $0 [-s localhost|server] [-f serverfile] [-p] [-h]"
+    echo "Usage: $0 [-s localhost|server] [-f serverfile] [-p] [-d] [-e emaillist] [-h]"
     echo "-s server string, need -p for ping test"
     echo "-f server filename, cannot exist with -s at sametime; need -p for ping test"
-    echo "-p ping host, need to work with -s or -f option"
+    echo "-p ping flag, need to work with -s or -f option"
+    echo "-d debug flag"
+    echo "-e email list"
     echo "-h help"
     exit
 }
@@ -27,7 +33,7 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
-while getopts ":s:f:ph" opt; do
+while getopts ":s:f:e:pdh" opt; do
 case $opt in
     s) SERVER="$OPTARG"
     if [[ -z "$SERVER" ]];then 
@@ -41,7 +47,12 @@ case $opt in
         usage
     fi
     ;;
-        p) PING=1
+    p) PING=1
+    ;;
+    d) DEBUG=1
+    ;;
+    e) EMAIL_LIST="$OPTARG"
+    EMAILYES=1
     ;;
     h) usage
     ;;
@@ -73,3 +84,9 @@ if [[ $PING -eq 1 ]];then
         exit
     fi
 fi
+
+
+
+
+
+    

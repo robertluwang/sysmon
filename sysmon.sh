@@ -1,5 +1,5 @@
 #!/bin/bash
-# system monitoring solution cli
+# system monitoring solution
 # https://github.com/robertluwang
 # v1.1 kpi for FS space usage  Feb 20, 2020 
 # v1.2 supports kpi loop  Feb 22, 2020 
@@ -17,6 +17,10 @@ source ./util/sysmon-common.sh
 source ./util/sysmon-kpi.sh
 source ./util/alarm-common.sh
 
+# disable debug and email 
+DEBUG=0
+EMAILYES=0
+
 ## main loop 
 
 unset SERVER FILE KPI MODE 
@@ -25,12 +29,14 @@ PING=0
 
 usage()
 {
-    echo "Usage: $0 [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-p] [-l] [-h]"
+    echo "Usage: $0 [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-p] [-d] [-e emaillist] [-l] [-h]"
     echo "-s server string, localhost need -k option; remote server need -k -m options for system monitor or need -p for ping test"
     echo "-f server filename, cannot exist with -s at sametime; need -k -m options for system monitor or need -p for ping test"
     echo "-k kpi name, all or valid kpi name like fs, mem and cpu etc"
     echo "-m access mode, ssh remote access with key or user/password"
-    echo "-p ping host, need to work with -s or -f option"
+    echo "-p ping flag, need to work with -s or -f option"
+    echo "-d debug flag"
+    echo "-e email list"
     echo "-l list available kpi list"
     echo "-h help"
     exit
@@ -40,7 +46,7 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
-while getopts ":s:f:k:m:plh" opt; do
+while getopts ":s:f:k:m:e:pdlh" opt; do
 case $opt in
     s) SERVER="$OPTARG"
     if [[ -z "$SERVER" ]];then 
@@ -71,6 +77,11 @@ case $opt in
     fi
     ;;
     p) PING=1
+    ;;
+    d) DEBUG=1
+    ;;
+    e) EMAIL_LIST="$OPTARG"
+    EMAILYES=1
     ;;
     l) echo `lowcase "$KPIFULL"`
     exit
@@ -193,18 +204,4 @@ fi
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     
-

@@ -1,3 +1,7 @@
+#!/bin/bash
+# sysmon common functions for alarm
+# https://github.com/robertluwang
+
 # alarm db setting
 readonly DBPATH=`pwd`/db
 readonly ALARMDB="alarm.db"

@@ -8,17 +8,23 @@ source ./util/sysmon-common.sh
 source ./util/sysmon-kpi.sh
 source ./util/alarm-common.sh
 
+# disable debug and email 
+DEBUG=0
+EMAILYES=0
+
 ## main loop 
 
 unset SERVER FILE KPI MODE 
 
 usage()
 {
-    echo "Usage: $0 [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-l] [-h]"
+    echo "Usage: $0 [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-d] [-e emaillist] [-l] [-h]"
     echo "-s server string, localhost need -k option; remote server need -k -m options for system monitor"
     echo "-f server filename, cannot exist with -s at sametime; need -k -m options for system monitor"
     echo "-k kpi name, all or valid kpi name like fs, mem and cpu etc"
     echo "-m access mode, ssh remote access with key or user/password"
+    echo "-d debug flag"
+    echo "-e email list"
     echo "-l list available kpi list"
     echo "-h help"
     exit
@@ -28,7 +34,7 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
-while getopts ":s:f:k:m:lh" opt; do
+while getopts ":s:f:k:m:e:ldh" opt; do
 case $opt in
     s) SERVER="$OPTARG"
     if [[ -z "$SERVER" ]];then 
@@ -57,6 +63,11 @@ case $opt in
         echo Invalid access mode $MODE
         usage
     fi
+    ;;
+    d) DEBUG=1
+    ;;
+    e) EMAIL_LIST="$OPTARG"
+    EMAILYES=1
     ;;
     l) echo `lowcase "$KPIFULL"`
     exit
@@ -151,3 +162,7 @@ if [[ -n $KPI && -n $MODE && ( -n $SERVER || -n $FILE ) ]];then
         fi
     fi
 fi
+
+
+
+    

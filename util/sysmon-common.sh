@@ -4,7 +4,7 @@
 
 ## common setting
 
-DEBUG=1  # 1 - keep outlog    0 - remove outlog 
+DEBUG=0  # 1 - keep outlog    0 - remove outlog 
 readonly LOGFOLDER=`pwd`/outlog  # it must be at shared FS , accessable by all nodes
 readonly REPFOLDER=`pwd`/report  # it must be at shared FS , accessable by all nodes
 
@@ -139,9 +139,6 @@ local_monitor()
 TS=` date '+%m-%d-%Y-%H-%M-%S'`
 for kpi in $KPI
 do 
-    echo >> $REPORT
-    echo "`date ` - `hostname` - $kpi"  >> $REPORT
-    echo >> $REPORT
     CMD_NAME=`echo CMD_$kpi`
     THRESHOLD_NAME=`echo THRESHOLD_$kpi`
     CMD=${!CMD_NAME}
@@ -150,19 +147,15 @@ do
     kpi_`lowcase $kpi` "$SERVER" "$THRESHOLD" "$TS" >> $REPORT
 done
 
-echo >> $REPORT
-    
 [[ $DEBUG -ne 1 ]] && rm -f $LOGFOLDER/*_$TS.log || echo "Please see detail log at ""$LOGFOLDER/<kpi>_<node>_$TS.log" >> $REPORT
 
 # send report by email 
 
-echo 
 cat $REPORT
-echo 
-echo The system monitoring report saved at $REPORT
-echo
 
-[[ $EMAILYES -eq 1 ]] && send_email "${EMAIL_SUB}" "$REPORT" "${EMAIL_FILTER}" "${EMAIL_LIST}"
+[[ $DEBUG -eq 1 ]] && echo The system monitoring report saved at $REPORT
+
+[[ $EMAILYES -eq 1 ]] && echo send_email "${EMAIL_SUB}" "$REPORT" "${EMAIL_FILTER}" "${EMAIL_LIST}"
 
 exit
 
@@ -180,9 +173,6 @@ if [ -n "$FILE" ];then # node list file
     do
         for kpi in $KPI
         do 
-            echo >> $REPORT
-            echo "`date ` - $node - $kpi"  >> $REPORT
-            echo >> $REPORT
             CMD_NAME=`echo CMD_$kpi`
             THRESHOLD_NAME=`echo THRESHOLD_$kpi`
             CMD=${!CMD_NAME}
@@ -196,9 +186,6 @@ else # node list string
     do
         for kpi in $KPI
         do 
-            echo >> $REPORT
-            echo "`date ` - $node - $kpi"  >> $REPORT
-            echo >> $REPORT
             CMD_NAME=`echo CMD_$kpi`
             THRESHOLD_NAME=`echo THRESHOLD_$kpi`
             CMD=${!CMD_NAME}
@@ -209,19 +196,16 @@ else # node list string
     done
 fi
 
-echo >> $REPORT
-
 [[ $DEBUG -ne 1 ]] && rm -f $LOGFOLDER/*_$TS.log || echo "Please see detail log at ""$LOGFOLDER/<kpi>_<node>_$TS.log" >> $REPORT
 
 # send report by email 
 
-echo 
-cat $REPORT
-echo 
-echo The system monitoring report saved at $REPORT
-echo
 
-[[ $EMAILYES -eq 1 ]] && send_email "${EMAIL_SUB}" "$REPORT" "${EMAIL_FILTER}" "${EMAIL_LIST}"
+cat $REPORT
+
+[[ $DEBUG -eq 1 ]] && echo The system monitoring report saved at $REPORT
+
+[[ $EMAILYES -eq 1 ]] && echo send_email "${EMAIL_SUB}" "$REPORT" "${EMAIL_FILTER}" "${EMAIL_LIST}"
 
 exit
 }
@@ -239,9 +223,6 @@ if [ -n "$FILE" ];then  # node list file
     do
         for kpi in $KPI
         do 
-            echo >> $REPORT
-            echo "`date ` - $node - $kpi"  >> $REPORT
-            echo >> $REPORT
             CMD_NAME=`echo CMD_$kpi`
             THRESHOLD_NAME=`echo THRESHOLD_$kpi`
             CMD=${!CMD_NAME}
@@ -255,9 +236,6 @@ else # node list string
     do
         for kpi in $KPI
         do 
-            echo >> $REPORT
-            echo "`date ` - $node - $kpi"  >> $REPORT
-            echo >> $REPORT
             CMD_NAME=`echo CMD_$kpi`
             THRESHOLD_NAME=`echo THRESHOLD_$kpi`
             CMD=${!CMD_NAME}
@@ -268,19 +246,15 @@ else # node list string
     done
 fi
 
-echo >> $REPORT
-
 [[ $DEBUG -ne 1 ]] && rm -f $LOGFOLDER/*_$TS.log || echo "Please see detail log at ""$LOGFOLDER/<kpi>_<node>_$TS.log" >> $REPORT
 
 # send report by email 
 
-echo 
 cat $REPORT
-echo 
-echo The system monitoring report saved at $REPORT
-echo
 
-[[ $EMAILYES -eq 1 ]] && send_email "${EMAIL_SUB}" "$REPORT" "${EMAIL_FILTER}" "${EMAIL_LIST}"
+[[ $DEBUG -eq 1 ]] && echo The system monitoring report saved at $REPORT
+
+[[ $EMAILYES -eq 1 ]] && echo send_email "${EMAIL_SUB}" "$REPORT" "${EMAIL_FILTER}" "${EMAIL_LIST}"
 
 exit
 }
@@ -320,13 +294,11 @@ fi
 
 # send report by email 
 
-echo 
 cat $REPORT
-echo 
-echo The system monitoring report saved at $REPORT
-echo
 
-[[ $EMAILYES -eq 1 ]] && send_email "${EMAIL_SUB}" "$REPORT" "${EMAIL_FILTER}" "${EMAIL_LIST}"
+[[ $DEBUG -eq 1 ]] && echo The system monitoring report saved at $REPORT
+
+[[ $EMAILYES -eq 1 ]] && echo send_email "${EMAIL_SUB}" "$REPORT" "${EMAIL_FILTER}" "${EMAIL_LIST}"
 
 exit
 }
