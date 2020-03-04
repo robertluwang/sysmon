@@ -24,7 +24,7 @@ usage()
     echo "-f server filename, cannot exist with -s at sametime; need -p for ping test"
     echo "-p ping flag, need to work with -s or -f option"
     echo "-d debug flag"
-    echo "-e email list"
+    echo "-e email list, will use default list if leave as ''"
     echo "-h help"
     exit
 }
@@ -51,7 +51,7 @@ case $opt in
     ;;
     d) DEBUG=1
     ;;
-    e) EMAIL_LIST="$OPTARG"
+    e) [[ -n "$OPTARG"  ]] && EMAIL_LIST="$OPTARG"
     EMAILYES=1
     ;;
     h) usage

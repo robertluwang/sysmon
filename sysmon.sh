@@ -36,7 +36,7 @@ usage()
     echo "-m access mode, ssh remote access with key or user/password"
     echo "-p ping flag, need to work with -s or -f option"
     echo "-d debug flag"
-    echo "-e email list"
+    echo "-e email list, will use default list if leave as ''"
     echo "-l list available kpi list"
     echo "-h help"
     exit
@@ -80,7 +80,7 @@ case $opt in
     ;;
     d) DEBUG=1
     ;;
-    e) EMAIL_LIST="$OPTARG"
+    e) [[ -n "$OPTARG"  ]] && EMAIL_LIST="$OPTARG"
     EMAILYES=1
     ;;
     l) echo `lowcase "$KPIFULL"`

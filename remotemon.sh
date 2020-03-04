@@ -24,7 +24,7 @@ usage()
     echo "-k kpi name, all or valid kpi name like fs, mem and cpu etc"
     echo "-m access mode, ssh remote access with key or user/password"
     echo "-d debug flag"
-    echo "-e email list"
+    echo "-e email list, will use default list if leave as ''"
     echo "-l list available kpi list"
     echo "-h help"
     exit
@@ -66,7 +66,7 @@ case $opt in
     ;;
     d) DEBUG=1
     ;;
-    e) EMAIL_LIST="$OPTARG"
+    e) [[ -n "$OPTARG"  ]] && EMAIL_LIST="$OPTARG"
     EMAILYES=1
     ;;
     l) echo `lowcase "$KPIFULL"`

@@ -25,7 +25,7 @@ Usage: ./sysmon.sh [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pa
 -m access mode, ssh remote access with key or user/password
 -p ping flag, need to work with -s or -f option
 -d debug flag
--e email list
+-e email list, will use default list if leave as ''
 -l list available kpi list
 -h help
 ```
@@ -144,4 +144,10 @@ The system monitoring report saved at /shared/sysmon/report/sysmon_report_03-04-
 Please see detail log at /shared/sysmon/outlog/<kpi>_<node>_03-04-2020-14-38-19.log
 The system monitoring report saved at /shared/sysmon/report/sysmon_report_03-04-2020-14-38-19.log
 send_email System monitoring report - 03-04-2020-14-38-19 /shared/sysmon/report/sysmon_report_03-04-2020-14-38-19.log HIGH info@sysmon.com
+
+/shared/sysmon$ ./localmon.sh -d -e '' -k cpu
+03-04-2020-16-08-44   localhost   cpu   HIGH [  cpu usage(>5%): 7%  ]
+Please see detail log at /shared/sysmon/outlog/<kpi>_<node>_03-04-2020-16-08-44.log
+The system monitoring report saved at /shared/sysmon/report/sysmon_report_03-04-2020-16-08-44.log
+send_email System monitoring report - 03-04-2020-16-08-44 /shared/sysmon/report/sysmon_report_03-04-2020-16-08-44.log HIGH demo@sysmon.com
 ```

@@ -23,7 +23,7 @@ usage()
     echo "-k kpi name, all or valid kpi name like fs, mem and cpu etc"
     echo "-l list available kpi list"
     echo "-d debug flag"
-    echo "-e email list"
+    echo "-e email list, will use default list if leave as ''"
     echo "-h help"
     exit
 }
@@ -47,7 +47,7 @@ case $opt in
     ;;
     d) DEBUG=1
     ;;
-    e) EMAIL_LIST="$OPTARG"
+    e) [[ -n "$OPTARG"  ]] && EMAIL_LIST="$OPTARG"
     EMAILYES=1
     ;;
     h) usage
