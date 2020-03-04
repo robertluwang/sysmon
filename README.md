@@ -71,9 +71,9 @@ Sat Feb 29 18:18:07 STD 2020 - localhost - CPU
 
 02-29-2020-18-18-05   localhost   cpu   HIGH [  cpu usage(>5%): 8%  ]
 
-Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_02-29-2020-18-18-05.log
+Please see detail log at /mnt/c/shared/sysmon/outlog/<kpi>_<node>_02-29-2020-18-18-05.log
 
-The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report_02-29-2020-18-18-05.log
+The system monitoring report saved at /mnt/c/shared/sysmon/report/report_02-29-2020-18-18-05.log
 ```
 
 ## monitor for remote server with key on selected kpi
@@ -88,9 +88,9 @@ Sat Feb 29 18:22:00 STD 2020 - wsl - CPU
 
 02-29-2020-18-21-57   wsl   cpu   HIGH [  cpu usage(>5%): 8%  ]
 
-Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_02-29-2020-18-21-57.log
+Please see detail log at /mnt/c/shared/sysmon/outlog/<kpi>_<node>_02-29-2020-18-21-57.log
 
-The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report_02-29-2020-18-21-57.log
+The system monitoring report saved at /mnt/c/shared/sysmon/report/report_02-29-2020-18-21-57.log
 ```
 
 ## monitor for remote server with user/pass on selected kpi 
@@ -111,9 +111,9 @@ Sat Feb 29 18:24:06 STD 2020 - wsl - FS
 02-29-2020-18-24-03   wsl   fs   HIGH [  none 511G 444G 67G 87% /run/user  ]
 02-29-2020-18-24-03   wsl   fs   HIGH [  C: 511G 444G 67G 87% /mnt/c  ]
 
-Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_02-29-2020-18-24-03.log
+Please see detail log at /mnt/c/shared/sysmon/outlog/<kpi>_<node>_02-29-2020-18-24-03.log
 
-The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report_02-29-2020-18-24-03.log
+The system monitoring report saved at /mnt/c/shared/sysmon/report/report_02-29-2020-18-24-03.log
 ```
 ## monitor for remote server with ssh key for server list file
 ```
@@ -127,9 +127,9 @@ Mon Mar  2 13:25:01 STD 2020 - wsl2 - CPU
 
 03-02-2020-13-24-58   wsl2   cpu   HIGH [  cpu usage(>5%): 8%  ]
 
-Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_03-02-2020-13-24-58.log
+Please see detail log at /mnt/c/shared/sysmon/outlog/<kpi>_<node>_03-02-2020-13-24-58.log
 
-The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report_03-02-2020-13-24-58.log
+The system monitoring report saved at /mnt/c/shared/sysmon/report/report_03-02-2020-13-24-58.log
 ```
 ## monitor for remote server with user/pass for server list file
 ```
@@ -145,6 +145,43 @@ Mon Mar  2 13:25:24 STD 2020 - wsl2 - MEM
 
 Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_03-02-2020-13-25-20.log
 
-The system monitoring report saved at /mnt/c/shared/sysmon/.sysmon/report/report_03-02-2020-13-25-20.log
+The system monitoring report saved at /mnt/c/shared/sysmon/report/report_03-02-2020-13-25-20.log
 ```
+## hostping cli 
+```
+/mnt/c/shared/sysmon$ ./hostping.sh -p -s wsl2
 
+03-03-2020-18-38-04 wsl2 ping - [ Server wsl2 : up ]
+
+The system monitoring report saved at /mnt/c/shared/sysmon/report/sysmon_report_03-03-2020-18-38-04.log
+
+/mnt/c/shared/sysmon$ ./hostping.sh -p -f config/nodelist
+
+03-03-2020-18-38-13 wsl1 ping - [ Server wsl1 : up ]
+03-03-2020-18-38-13 wsl2 ping - [ Server wsl2 : up ]
+
+The system monitoring report saved at /mnt/c/shared/sysmon/report/sysmon_report_03-03-2020-18-38-13.log
+```
+## remotemon cli 
+/mnt/c/shared/sysmon$ ./remotemon.sh -k cpu -m key -s wsl1
+
+Tue Mar  3 18:42:27 STD 2020 - wsl1 - CPU
+
+03-03-2020-18-42-27   wsl1   cpu   HIGH [  cpu usage(>5%): 9%  ]
+
+Please see detail log at /mnt/c/shared/sysmon/outlog/<kpi>_<node>_03-03-2020-18-42-27.log
+
+The system monitoring report saved at /mnt/c/shared/sysmon/report/sysmon_report_03-03-2020-18-42-27.log
+
+/mnt/c/shared/sysmon$ ./remotemon.sh -k cpu -m key -f config/nodelist
+
+Tue Mar  3 18:42:36 STD 2020 - wsl1 - CPU
+
+03-03-2020-18-42-36   wsl1   cpu   HIGH [  cpu usage(>5%): 9%  ]
+
+Tue Mar  3 18:42:38 STD 2020 - wsl2 - CPU
+
+03-03-2020-18-42-36   wsl2   cpu   HIGH [  cpu usage(>5%): 9%  ]
+
+Please see detail log at /mnt/c/shared/sysmon/outlog/<kpi>_<node>_03-03-2020-18-42-36.log
+```
