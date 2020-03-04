@@ -17,7 +17,7 @@ add wslx as remote server just for test, it enabled user/password login and ssh 
 
 ## Usages
 ```
-/mnt/c/shared/sysmon$ ./sysmon.bash
+/mnt/c/shared/sysmon$ ./sysmon.sh
 Usage: ./sysmon.sh [-s localhost|server] [-f serverfile] [-k all|kpi] [-m key|pass] [-p] [-l] [-h]
 -s server string, localhost need -k option; remote server need -k -m options for system monitor or needs -p for ping test
 -f server filename, cannot exist with -s at sametime; need -k -m options for system monitor or need -p for ping test
