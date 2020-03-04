@@ -21,24 +21,6 @@ THRESHOLD_FS=50
 THRESHOLD_MEM=20
 THRESHOLD_CPU=5
 
-# misc
-validkpi()
-{
-local _kpi _kpifull
-_kpi="$1"
-_kpifull="$2"
-
-for k in ${_kpi}
-do
-    if [[ ${_kpifull} != *"$k"* ]];then
-        echo "Invalidkpi"
-        break
-    else
-        echo "Validkpi"
-    fi
-done
-}
-
 # kpi parsing function 
 
 kpi_fs()

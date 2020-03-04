@@ -48,6 +48,29 @@ _str="$1"
 echo "${_str}" | tr 'a-z' 'A-Z'
 }
 
+belongset()
+{
+# check if sub set string belong to full set string
+# sample: belongset "a c" "a b c d"
+# return 1 if belonged; o/w 0 
+local _subsetstr _fullsetstr belong
+_subsetstr="$1"
+_fullsetstr="$2"
+
+belong=0
+
+for k in ${_subsetstr}
+do
+    if [[ ${_fullsetstr} != *"$k"* ]];then
+        belong=0
+        break
+    else
+        belong=1
+    fi
+done
+echo $belong
+}
+
 localsys()
 {
 local _cmd _kpi _ts

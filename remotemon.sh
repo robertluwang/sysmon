@@ -45,9 +45,7 @@ case $opt in
     k) KPI="`upcase "$OPTARG"`"
     if [[ "$KPI" == "ALL" ]];then 
         KPI="$KPIFULL"  
-    elif [[ "`validkpi "$KPI" "$KPIFULL"|tail -1`" == "Validkpi" ]];then
-        :
-    else
+    elif [[ $(belongset "$KPI" "$KPIFULL") == 0 ]];then
         echo Invalid kpi $KPI
         usage
     fi 
