@@ -186,3 +186,30 @@ Tue Mar  3 18:42:38 STD 2020 - wsl2 - CPU
 
 Please see detail log at /mnt/c/shared/sysmon/outlog/<kpi>_<node>_03-03-2020-18-42-36.log
 ```
+## localmon cli 
+```
+/mnt/c/shared/sysmon$ ./localmon.sh -k all
+
+Tue Mar  3 19:30:39 STD 2020 - localhost - FS
+
+03-03-2020-19-30-39   localhost   fs   HIGH [  rootfs 511G 446G 65G 88% /  ]
+03-03-2020-19-30-39   localhost   fs   HIGH [  none 511G 446G 65G 88% /dev  ]
+03-03-2020-19-30-39   localhost   fs   HIGH [  none 511G 446G 65G 88% /run  ]
+03-03-2020-19-30-39   localhost   fs   HIGH [  none 511G 446G 65G 88% /run/lock  ]
+03-03-2020-19-30-39   localhost   fs   HIGH [  none 511G 446G 65G 88% /run/shm  ]
+03-03-2020-19-30-39   localhost   fs   HIGH [  none 511G 446G 65G 88% /run/user  ]
+03-03-2020-19-30-39   localhost   fs   HIGH [  C: 511G 446G 65G 88% /mnt/c  ]
+
+Tue Mar  3 19:30:40 STD 2020 - localhost - MEM
+
+03-03-2020-19-30-39   localhost   mem   HIGH [  memory total: 32GB memory used: 13GB memory free: 18GB memory usage: 42%  ]
+
+Tue Mar  3 19:30:41 STD 2020 - localhost - CPU
+
+03-03-2020-19-30-39   localhost   cpu   HIGH [  cpu usage(>5%): 9%  ]
+
+Please see detail log at /mnt/c/shared/sysmon/outlog/<kpi>_<node>_03-03-2020-19-30-39.log
+
+The system monitoring report saved at /mnt/c/shared/sysmon/report/sysmon_report_03-03-2020-19-30-38.log
+```
+
