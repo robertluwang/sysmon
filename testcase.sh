@@ -47,3 +47,17 @@ pause 'next test ...'
 
 echo remote monitor with pass
 ./sysmon.sh -k all -m pass -f config/nodelist 
+
+pause 'next test ...'
+
+echo turn on debug
+./sysmon.sh -d -k all -m pass -f config/nodelist 
+
+echo enable email, using default email list  
+./sysmon.sh -d -e '' -k cpu -m key -s wsl2 
+
+pause 'next test ...'
+
+echo enable email, using new email list  
+./sysmon.sh -d -e "info@sysmon.com" -k cpu -m key -s wsl2 
+
