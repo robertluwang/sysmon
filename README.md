@@ -143,7 +143,7 @@ Mon Mar  2 13:25:24 STD 2020 - wsl2 - MEM
 
 03-02-2020-13-25-20   wsl2   mem   HIGH [  memory total: 32GB memory used: 13GB memory free: 19GB memory usage: 41%  ]
 
-Please see detail log at /mnt/c/shared/sysmon/.sysmon/outlog/<kpi>_<node>_03-02-2020-13-25-20.log
+Please see detail log at /mnt/c/shared/sysmon/outlog/<kpi>_<node>_03-02-2020-13-25-20.log
 
 The system monitoring report saved at /mnt/c/shared/sysmon/report/report_03-02-2020-13-25-20.log
 ```
@@ -163,6 +163,7 @@ The system monitoring report saved at /mnt/c/shared/sysmon/report/sysmon_report_
 The system monitoring report saved at /mnt/c/shared/sysmon/report/sysmon_report_03-03-2020-18-38-13.log
 ```
 ## remotemon cli 
+```
 /mnt/c/shared/sysmon$ ./remotemon.sh -k cpu -m key -s wsl1
 
 Tue Mar  3 18:42:27 STD 2020 - wsl1 - CPU
