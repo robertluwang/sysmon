@@ -24,8 +24,8 @@ EMAIL_SUB="System monitoring report - ${REPORT_TS}"
 readonly REPORT=$REPFOLDER/sysmon_report_${REPORT_TS}.log
 
 # node access 
-USERNAME='oldhorse'
-PASSWORD='gogo'
+USERNAME='sysmon'
+PASSWORD='sysmon'
 readonly SSHKEY="~/.ssh/id_rsa"
 
 pause(){
