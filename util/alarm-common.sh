@@ -3,7 +3,7 @@
 # https://github.com/robertluwang
 
 # alarm db setting
-readonly DBPATH=`pwd`/db
+readonly DBPATH=$SYSMON/db
 readonly ALARMDB="alarm.db"
 readonly DBDUMP="alarmdb_dump.txt-$REPORT_TS"
 ALARMID=1000000
