@@ -13,9 +13,10 @@
 
 ## import common functions 
 
-source ./util/sysmon-common.sh
-source ./util/sysmon-kpi.sh
-source ./util/alarm-common.sh
+SYSMON=`pwd`
+source $SYSMON/util/sysmon-common.sh
+source $SYSMON/util/sysmon-kpi.sh
+source $SYSMON/util/alarm-common.sh
 
 # disable debug and email 
 DEBUG=0

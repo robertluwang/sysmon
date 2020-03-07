@@ -5,8 +5,8 @@
 ## common setting
 
 DEBUG=0  # 1 - keep outlog    0 - remove outlog 
-readonly LOGFOLDER=`pwd`/outlog  # it must be at shared FS , accessable by all nodes
-readonly REPFOLDER=`pwd`/report  # it must be at shared FS , accessable by all nodes
+readonly LOGFOLDER=`pwd`/outlog  
+readonly REPFOLDER=`pwd`/report  
 
 [ ! -d "$LOGFOLDER" ] && sudo mkdir -p $LOGFOLDER
 sudo chmod 666 $LOGFOLDER
@@ -24,8 +24,8 @@ EMAIL_SUB="System monitoring report - ${REPORT_TS}"
 readonly REPORT=$REPFOLDER/sysmon_report_${REPORT_TS}.log
 
 # node access 
-USERNAME='sysmon'
-PASSWORD='sysmon'
+USERNAME='oldhorse'
+PASSWORD='gogo'
 readonly SSHKEY="~/.ssh/id_rsa"
 
 pause(){
@@ -100,9 +100,15 @@ send "${_password}\r"
 expect "password: "
 send "${_password}\r"
 expect "$ "
-send "${_cmd} > $LOGFOLDER/${_kpi}_${_server}_${_ts}.log\r"
+send "${_cmd} > /tmp/temp.log\r"
 expect "$ "
 send "exit\r"
+EOF
+
+expect << EOF
+log_user 0
+spawn scp -o StrictHostKeyChecking=no ${_username}@${_server}:/tmp/temp.log $LOGFOLDER/${_kpi}_${_server}_${_ts}.log
+expect "$ "
 EOF
 }
 
