@@ -5,8 +5,8 @@
 ## common setting
 
 DEBUG=0  # 1 - keep outlog    0 - remove outlog 
-readonly LOGFOLDER=`pwd`/outlog  
-readonly REPFOLDER=`pwd`/report  
+readonly LOGFOLDER=$SYSMON/outlog  
+readonly REPFOLDER=$SYSMON/report  
 
 [ ! -d "$LOGFOLDER" ] && sudo mkdir -p $LOGFOLDER
 sudo chmod 666 $LOGFOLDER
